@@ -1,90 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PKRD Wallet</title>
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
-    h2, h3 { color: #333; }
-    input, button { margin: 5px 0; padding: 8px; width: 100%; max-width: 500px; }
-    pre, code { background: #fff; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; }
-  </style>
+  <link href="style.css" rel="stylesheet" />
 </head>
 <body>
-
-  <h2>🎉 Create Your PKRD Wallet</h2>
-  <button onclick="generateWallet()">Generate Wallet</button>
-  <pre id="output">Wallet info will appear here...</pre>
-
-  <h3>💰 Check Balance</h3>
-  <input type="text" id="checkAddress" placeholder="Enter Wallet Address">
-  <button onclick="checkBalance()">Check Balance</button>
-  <pre id="balanceOutput"></pre>
-
-  <h3>📥 Your Wallet Address</h3>
-  <code id="walletAddress">Generate a wallet to see your address here</code>
-
-  <h3>📤 Send PKRD</h3>
-  <input type="text" id="sendPrivateKey" placeholder="Sender Private Key">
-  <input type="text" id="recipient" placeholder="Recipient Address">
-  <input type="text" id="amount" placeholder="Amount in PKRD (e.g. 0.5)">
-  <button onclick="sendPKRD()">Send</button>
-  <pre id="txOutput"></pre>
-
-  <script>
-    const provider = new ethers.JsonRpcProvider("https://testnet.pkrd.digital");
-
-    function generateWallet() {
-      const wallet = ethers.Wallet.createRandom();
-      document.getElementById("output").innerText = `
-🆔 Address: ${wallet.address}
-🔑 Private Key: ${wallet.privateKey}
-📝 Mnemonic: ${wallet.mnemonic.phrase}
-
-⚠️ Save these securely. Do NOT share them with anyone.
-      `;
-      document.getElementById("walletAddress").innerText = wallet.address;
-    }
-
-    async function checkBalance() {
-      const address = document.getElementById("checkAddress").value;
-      if (!ethers.isAddress(address)) {
-        alert("❌ Invalid address!");
-        return;
-      }
-      try {
-        const balance = await provider.getBalance(address);
-        document.getElementById("balanceOutput").innerText =
-          `💰 Balance: ${ethers.formatEther(balance)} PKRD`;
-      } catch (err) {
-        document.getElementById("balanceOutput").innerText = `❌ Error: ${err.message}`;
-      }
-    }
-
-    async function sendPKRD() {
-      const privateKey = document.getElementById("sendPrivateKey").value.trim();
-      const recipient = document.getElementById("recipient").value.trim();
-      const amount = document.getElementById("amount").value.trim();
-
-      if (!ethers.isAddress(recipient)) {
-        alert("❌ Invalid recipient address!");
-        return;
-      }
-
-      try {
-        const wallet = new ethers.Wallet(privateKey, provider);
-        const tx = await wallet.sendTransaction({
-          to: recipient,
-          value: ethers.parseEther(amount)
-        });
-
-        document.getElementById("txOutput").innerText = `✅ Sent!\nTX Hash: ${tx.hash}`;
-      } catch (err) {
-        document.getElementById("txOutput").innerText = `❌ Error: ${err.message}`;
-      }
-    }
-  </script>
-
+  <div id="app">
+    <h1>PKRD Wallet</h1>
+    <p>Generate your wallet securely. Private keys are never uploaded or stored.</p>
+    <button onclick="generateWallet()">🔐 Generate Wallet</button>
+    <pre id="walletOutput"></pre>
+  </div>
+  <script src="wallet.js"></script>
 </body>
 </html>
