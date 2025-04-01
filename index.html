@@ -1,82 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>PKRD Wallet Generator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      text-align: center;
-      padding: 2rem;
-    }
-    .container {
-      background: white;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    }
-    h1 {
-      color: #1e88e5;
-    }
-    button {
-      background: #1e88e5;
-      color: white;
-      border: none;
-      padding: 1rem 2rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
-    button:hover {
-      background: #1565c0;
-    }
-    pre {
-      background: #eee;
-      text-align: left;
-      padding: 1rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin-top: 1rem;
-    }
-    .qr {
-      margin-top: 1rem;
-    }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>PKRD Wallet Generator</h1>
-    <button onclick="generateWallet()">🔐 Generate Wallet</button>
-    <pre id="output">Your new wallet address and private key will appear here...</pre>
-    <div id="qr" class="qr"></div>
-  </div>
+  <h2>🎉 Create Your PKRD Wallet</h2>
+  <button onclick="generateWallet()">Generate Wallet</button>
+  <pre id="output" style="white-space: pre-wrap; background: #f9f9f9; padding: 10px; border: 1px solid #ccc;"></pre>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.0/build/qrcode.min.js"></script>
   <script>
     async function generateWallet() {
-      const array = new Uint8Array(32);
-      window.crypto.getRandomValues(array);
-      const privateKey = Array.from(array).map(b => b.toString(16).padStart(2, '0')).join('');
+      const wallet = ethers.Wallet.createRandom();
+      const output = `
+🆔 Address: ${wallet.address}
+🔑 Private Key: ${wallet.privateKey}
+📝 Mnemonic: ${wallet.mnemonic.phrase}
 
-      const encoder = new TextEncoder();
-      const keyData = encoder.encode(privateKey);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', keyData);
-      const walletAddress = Array.from(new Uint8Array(hashBuffer))
-        .slice(0, 20)
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-
-      const output = `✅ Wallet Address: ${walletAddress}\n🔐 Private Key: ${privateKey}`;
-      document.getElementById('output').textContent = output;
-
-      QRCode.toCanvas(document.getElementById('qr'), walletAddress, function (error) {
-        if (error) console.error(error);
-      });
+⚠️ Save these securely. Do NOT share them with anyone.
+      `;
+      document.getElementById("output").innerText = output;
     }
   </script>
 </body>
